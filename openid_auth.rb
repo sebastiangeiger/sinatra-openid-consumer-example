@@ -5,6 +5,7 @@ require 'sinatra/base'
 gem 'ruby-openid', '>=2.1.2'
 require 'openid'
 require 'openid/store/filesystem'
+require 'haml'
 
 class OpenIDAuth < Sinatra::Base
   
@@ -42,7 +43,7 @@ class OpenIDAuth < Sinatra::Base
   end
     
   get '/login' do    
-    erb :login
+    haml :login
   end
 
   post '/login/openid' do
@@ -93,11 +94,7 @@ __END__
 
 @@ login
 
-<form class="openid_login" method="post" accept-charset="UTF-8" action='/login/openid'>
-  <label for="openid_identifier">Your OpenID:</label>
-  <input type="text" name="openid_identifier" 
-    style="background: url(http://openid.net/images/login-bg.gif) no-repeat #FFF 5px; padding-left: 25px;" />    
-      <small><a href="http://openid.net/get/" title="What is an OpenID? Where can i get one?'" class="help">What?</a></small>
-      <input type="submit" value="Login" />
-</form>
-
+%form{:method => "post", :action => '/login/openid'}
+	%label Your OpenID
+	%input{:type => 'text', :name => 'openid_identifier'}
+	%input{:type => 'submit', :value => "Login"}
