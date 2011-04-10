@@ -4,6 +4,7 @@ require 'rubygems'
 require 'sinatra'
 require 'openid'
 require 'openid/store/filesystem'
+require 'openid/extensions/sreg'
 require 'haml'
 
   
@@ -44,8 +45,10 @@ require 'haml'
     else
       # You could request additional information here - see specs:
       # http://openid.net/specs/openid-simple-registration-extension-1_0.html
-      # oidreq.add_extension_arg('sreg','required','nickname')
-      # oidreq.add_extension_arg('sreg','optional','fullname, email')
+      # sregreq = OpenID::SReg::Request.new
+      # sregreq.request_field('email', true)     #email is required 
+      # sregreq.request_field('fullname', false) #fullname is optional      
+      # oidreq.add_extension(sregreq)
       
       # Send request - first parameter: Trusted Site,
       # second parameter: redirect target
