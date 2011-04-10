@@ -1,15 +1,11 @@
 # An example for an OpenID consumer using Sinatra
 
 require 'rubygems'
-require 'sinatra/base'
-gem 'ruby-openid', '>=2.1.2'
+require 'sinatra'
 require 'openid'
 require 'openid/store/filesystem'
 require 'haml'
 
-class OpenIDAuth < Sinatra::Base
-  
-  use_in_file_templates!
   
   def openid_consumer
     @openid_consumer ||= OpenID::Consumer.new(session,
@@ -35,13 +31,6 @@ class OpenIDAuth < Sinatra::Base
   #   # redirect '/login'
   # end
 
-  # Send everything else to the super app
-  not_found do
-    if @app
-      @app.call(env)
-    end
-  end
-    
   get '/login' do    
     haml :login
   end
@@ -88,7 +77,6 @@ class OpenIDAuth < Sinatra::Base
         # session[:user] = User.find_by_openid(oidresp.display_identifier)
     end
   end
-end
 
 __END__
 
