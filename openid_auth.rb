@@ -5,6 +5,7 @@ require 'sinatra'
 require 'openid'
 require 'openid/store/filesystem'
 require 'openid/extensions/sreg'
+require 'openid/extensions/ax'
 require 'haml'
 
   
@@ -49,7 +50,12 @@ require 'haml'
       # sregreq.request_field('email', true)     #email is required 
       # sregreq.request_field('fullname', false) #fullname is optional      
       # oidreq.add_extension(sregreq)
-      
+      # Requesting the additional information via Attribute Exchange
+      # see: http://www.axschema.org
+      ax_req = OpenID::AX::FetchRequest.new
+      ax_req.add(OpenID::AX::AttrInfo.new('http://axschema.org/contact/email', 'email', true))
+      oidreq.add_extension(ax_req)
+      oidreq.return_to_args['did_ax'] = 'y'
       # Send request - first parameter: Trusted Site,
       # second parameter: redirect target
       redirect oidreq.redirect_url(root_url, root_url + "/login/openid/complete")
@@ -70,14 +76,11 @@ require 'haml'
         "Login cancelled."
 
       when OpenID::Consumer::SUCCESS
-        # Access additional informations:
-        # puts params['openid.sreg.nickname']
-        # puts params['openid.sreg.fullname']   
-        
-        # Startup something
-        "Login successfull."  
+        ax_response = OpenID::AX::FetchResponse.from_success_response(oidresp)
+        @email = ax_response['http://axschema.org/contact/email'].first
+        haml :welcome
         # Maybe something like
-        # session[:user] = User.find_by_openid(oidresp.display_identifier)
+        # session[:user] = User.find_by_email(@email)
     end
   end
 
