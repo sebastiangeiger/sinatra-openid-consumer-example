@@ -6,6 +6,7 @@ require 'openid'
 require 'openid/store/filesystem'
 require 'openid/extensions/sreg'
 require 'openid/extensions/ax'
+require 'gapps_openid'
 require 'haml'
 
   
@@ -38,11 +39,11 @@ require 'haml'
   end
 
   post '/login/openid' do
-    openid = params[:openid_identifier]
     begin
-      oidreq = openid_consumer.begin(openid)
+      gapps_domain = "http://"+params[:email].split("@").last
+      oidreq = openid_consumer.begin(gapps_domain)
     rescue OpenID::DiscoveryFailure => why
-      "Sorry, we couldn't find your identifier '#{openid}'"
+      "Sorry, we couldn't find your identifier '#{gapps_domain}'"
     else
       # You could request additional information here - see specs:
       # http://openid.net/specs/openid-simple-registration-extension-1_0.html
@@ -89,6 +90,13 @@ __END__
 @@ login
 
 %form{:method => "post", :action => '/login/openid'}
-	%label Your OpenID
-	%input{:type => 'text', :name => 'openid_identifier'}
+	%label Your Google Apps email:
+	%input{:type => 'text', :name => 'email'}
 	%input{:type => 'submit', :value => "Login"}
+
+
+@@ welcome
+
+Login successful.
+"Hello, #{@email}"
+%a{:href => "/login"} login page

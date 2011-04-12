@@ -4,6 +4,8 @@ GEM
     haml (3.0.25)
     rack (1.2.2)
     ruby-openid (2.1.8)
+    ruby-openid-apps-discovery (1.2.0)
+      ruby-openid (>= 2.1.7)
     shotgun (0.9)
       rack (>= 1.0)
     sinatra (1.2.1)
@@ -17,5 +19,6 @@ PLATFORMS
 DEPENDENCIES
   haml
   ruby-openid
+  ruby-openid-apps-discovery
   shotgun
   sinatra
